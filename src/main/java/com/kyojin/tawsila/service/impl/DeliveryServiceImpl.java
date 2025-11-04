@@ -9,16 +9,20 @@ import com.kyojin.tawsila.mapper.DeliveryMapper;
 import com.kyojin.tawsila.repository.DeliveryRepository;
 import com.kyojin.tawsila.repository.TourRepository;
 import com.kyojin.tawsila.service.DeliveryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class DeliveryServiceImpl implements DeliveryService {
 
     private final DeliveryRepository deliveryRepository;
     private final DeliveryMapper deliveryMapper;
     private final TourRepository tourRepository;
 
+    @Autowired
     public DeliveryServiceImpl(DeliveryRepository deliveryRepository,
                                DeliveryMapper deliveryMapper,
                                TourRepository tourRepository) {

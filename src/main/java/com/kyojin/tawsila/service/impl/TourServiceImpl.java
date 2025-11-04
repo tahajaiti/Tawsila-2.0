@@ -27,7 +27,9 @@ import com.kyojin.tawsila.util.TourValidator;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
 @RequiredArgsConstructor
 public class TourServiceImpl implements TourService {
 
@@ -36,8 +38,8 @@ public class TourServiceImpl implements TourService {
     private final VehicleRepository vehicleRepository;
     private final DeliveryRepository deliveryRepository;
     private final Warehouse warehouse;
-    private final TourOptimizer nearestNeighborOptimizer;
-    private final TourOptimizer clarkeWrightOptimizer;
+    private final TourOptimizer optimizer;
+
 
     @Override
     @Transactional
@@ -130,11 +132,6 @@ public class TourServiceImpl implements TourService {
         if (deliveries == null || deliveries.isEmpty()) {
             return tourMapper.toDTO(tour);
         }
-
-        TourOptimizer optimizer = switch (type) {
-            case NEAREST_NEIGHBOR -> nearestNeighborOptimizer;
-            case CLARKE_WRIGHT -> clarkeWrightOptimizer;
-        };
 
         var optimizedDeliveries = optimizer.calculateOptimalTour(warehouse, deliveries, vehicle);
 
