@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: Tawsila
+  config:
+    import: optional:./.env
+  mvc:
+    servlet:
+      path: /api/v2
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+    drop-first: false
+
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    path: /swagger.html
