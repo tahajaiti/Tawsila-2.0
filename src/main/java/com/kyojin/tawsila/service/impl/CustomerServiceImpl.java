@@ -50,8 +50,7 @@ public class CustomerServiceImpl implements CustomerService {
         customerRepository.deleteById(id);
     }
 
-    public CustomerDTO updateCustomer(CustomerDTO customerDTO) {
-        Long id = customerDTO.getId();
+    public CustomerDTO updateCustomer(CustomerDTO customerDTO, Long id) {
         Customer existingCustomer = customerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Customer not found with id: " + id));
 

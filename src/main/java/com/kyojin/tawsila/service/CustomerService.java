@@ -43,5 +43,5 @@ public interface CustomerService {
      * @param customerDTO the DTO containing updated customer data
      * @return the updated CustomerDTO
      */
-    CustomerDTO updateCustomer(CustomerDTO customerDTO);
+    CustomerDTO updateCustomer(CustomerDTO customerDTO, Long id);
 }
