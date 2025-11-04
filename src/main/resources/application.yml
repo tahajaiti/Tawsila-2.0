@@ -3,6 +3,8 @@ spring:
     name: Tawsila
   config:
     import: optional:./.env
+  profiles:
+    active: dev
   mvc:
     servlet:
       path: /api/v2
