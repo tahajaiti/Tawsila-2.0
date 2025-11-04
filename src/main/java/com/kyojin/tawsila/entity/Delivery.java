@@ -42,9 +42,20 @@ public class Delivery {
     @Column(nullable = false)
     private DeliveryStatus status;
 
+    /**
+     * Each delivery is linked to one tour (optional).
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tour_id")
     private Tour tour;
+
+    /**
+     * Each delivery belongs to one customer.
+     * This replaces direct address storage in Delivery.
+     */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
 
     @PrePersist
