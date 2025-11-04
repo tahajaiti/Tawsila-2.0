@@ -7,16 +7,20 @@ import com.kyojin.tawsila.mapper.VehicleMapper;
 import com.kyojin.tawsila.repository.VehicleRepository;
 import com.kyojin.tawsila.service.VehicleService;
 import com.kyojin.tawsila.util.ParseUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class VehicleServiceImpl implements VehicleService {
 
 
     private final VehicleRepository vehicleRepository;
     private final VehicleMapper vehicleMapper;
 
+    @Autowired
     public  VehicleServiceImpl(VehicleRepository vehicleRepository, VehicleMapper vehicleMapper) {
         this.vehicleRepository = vehicleRepository;
         this.vehicleMapper = vehicleMapper;
