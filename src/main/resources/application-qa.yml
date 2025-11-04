@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: ${QA_DB_URL}
+    username: ${QA_DB_USER}
+    password: ${QA_DB_PASSWORD}
+    driver-class-name: ${QA_DB_DRIVER}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+  liquibase:
+    contexts: qa
+
