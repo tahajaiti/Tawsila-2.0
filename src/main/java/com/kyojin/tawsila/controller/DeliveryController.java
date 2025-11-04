@@ -4,6 +4,7 @@ import com.kyojin.tawsila.dto.DeliveryDTO;
 import com.kyojin.tawsila.dto.DeliveryStatusDTO;
 import com.kyojin.tawsila.service.DeliveryService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ public class DeliveryController {
 
     private final DeliveryService deliveryService;
 
+    @Autowired
     public DeliveryController(DeliveryService deliveryService) {
         this.deliveryService = deliveryService;
     }

@@ -7,6 +7,7 @@ import com.kyojin.tawsila.enums.AlgorithmType;
 import com.kyojin.tawsila.service.TourService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ public class TourController {
 
     private final TourService tourService;
 
+    @Autowired
     public TourController(TourService tourService) {
         this.tourService = tourService;
     }
@@ -52,9 +54,8 @@ public class TourController {
     }
 
     @GetMapping("/{id}/optimize")
-    public ResponseEntity<TourDTO> optimizeTour(@PathVariable Long id,
-                                                @RequestParam(defaultValue = "NEAREST_NEIGHBOR") String algorithm) {
-        var optimizedTour = tourService.getOptimizedTour(id, algorithm);
+    public ResponseEntity<TourDTO> optimizeTour(@PathVariable Long id) {
+        var optimizedTour = tourService.getOptimizedTour(id);
         return ResponseEntity.ok(optimizedTour);
     }
 

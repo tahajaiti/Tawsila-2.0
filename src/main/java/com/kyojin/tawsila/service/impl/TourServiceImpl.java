@@ -120,9 +120,7 @@ public class TourServiceImpl implements TourService {
 
     @Override
     @Transactional
-    public TourDTO getOptimizedTour(Long tourId, String algorithm) {
-        AlgorithmType type = ParseUtil.parseType(algorithm, AlgorithmType.class);
-
+    public TourDTO getOptimizedTour(Long tourId) {
         var tour = tourRepository.findById(tourId)
                 .orElseThrow(() -> new NotFoundException("Tour not found with id: " + tourId));
 
@@ -171,7 +169,7 @@ public class TourServiceImpl implements TourService {
         for (var delivery : deliveries) {
             totalDistance += DistanceCalculator.calculateDistance(
                     prevLat,
-                    prevLon.getLongitude(),
+                    prevLon,
                     delivery.getLatitude(),
                     delivery.getLongitude()
             );

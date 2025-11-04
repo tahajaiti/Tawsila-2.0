@@ -7,9 +7,11 @@ import com.kyojin.tawsila.enums.VehicleType;
 import com.kyojin.tawsila.optimizer.TourOptimizer;
 import com.kyojin.tawsila.util.DistanceCalculator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
 public class ClarkeWrightOptimizer implements TourOptimizer {
 
     @RequiredArgsConstructor

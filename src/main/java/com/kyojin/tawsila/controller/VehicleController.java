@@ -3,6 +3,7 @@ package com.kyojin.tawsila.controller;
 import com.kyojin.tawsila.dto.VehicleDTO;
 import com.kyojin.tawsila.service.VehicleService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +14,9 @@ import java.util.List;
 @RequestMapping("/vehicles")
 public class VehicleController {
 
-    private VehicleService vehicleService;
+    private final VehicleService vehicleService;
 
+    @Autowired
     public VehicleController(VehicleService vehicleService) {
         this.vehicleService = vehicleService;
     }
