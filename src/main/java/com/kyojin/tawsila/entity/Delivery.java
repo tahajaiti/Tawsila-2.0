@@ -18,6 +18,7 @@ public class Delivery {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // todo: Remove address fields in favor of Customer association
     @NotNull
     @Column(nullable = false)
     private Double latitude;

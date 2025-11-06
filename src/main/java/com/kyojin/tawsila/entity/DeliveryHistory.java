@@ -63,6 +63,9 @@ public class DeliveryHistory {
         if (deliveryDate != null) {
             this.dayOfWeek = deliveryDate.getDayOfWeek();
         }
+
+        if (deliveryDate == null) deliveryDate = LocalDate.now();
+        if (dayOfWeek == null) dayOfWeek = deliveryDate.getDayOfWeek();
     }
 
 }

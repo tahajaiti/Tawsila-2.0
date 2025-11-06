@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Table(name = "customers")
@@ -37,4 +38,7 @@ public class Customer {
     @Column(nullable = false)
     @JsonFormat(pattern = "HH:mm")
     private LocalTime preferredTimeSlotEnd;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Delivery> deliveries;
 }
