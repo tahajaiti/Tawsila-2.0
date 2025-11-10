@@ -56,4 +56,12 @@ public interface TourService {
      * @return Total distance of the tour in kilometers
      */
     TourDistanceDTO getTotalDistance(Long tourId);
+
+    /**
+     * Update a tour status
+     * @param tourId ID of the tour
+     * @param status The status to change to
+     * @return Updated tour DTO
+     */
+    TourDTO updateTourStatus(Long tourId, String status);
 }

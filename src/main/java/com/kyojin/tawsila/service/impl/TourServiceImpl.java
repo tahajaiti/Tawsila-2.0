@@ -203,6 +203,19 @@ public class TourServiceImpl implements TourService {
         return tourMapper.toDistanceDTO(totalDistance);
     }
 
+    @Override
+    public TourDTO updateTourStatus(Long tourId, String status) {
+        var tour = tourRepository.findById(tourId)
+                .orElseThrow(() -> new NotFoundException("Tour not found with id: " + tourId));
+
+        var newStatus = ParseUtil.parseType(status, TourStatus.class);
+
+        tour.setStatus(newStatus);
+
+        tourRepository.save(tour);
+
+        return tourMapper.toDTO(tour);
+    }
 
     private List<Delivery> findAndLinkDeliveries(List<DeliveryDTO> deliveryDTOs, Tour tour) {
         Set<Long> deliveryIds = deliveryDTOs.stream()
