@@ -13,6 +13,7 @@ import com.kyojin.tawsila.entity.Delivery;
 import com.kyojin.tawsila.entity.Tour;
 import com.kyojin.tawsila.entity.Warehouse;
 import com.kyojin.tawsila.enums.AlgorithmType;
+import com.kyojin.tawsila.enums.TourStatus;
 import com.kyojin.tawsila.exception.BadRequestException;
 import com.kyojin.tawsila.exception.NotFoundException;
 import com.kyojin.tawsila.mapper.TourMapper;
@@ -20,6 +21,7 @@ import com.kyojin.tawsila.optimizer.TourOptimizer;
 import com.kyojin.tawsila.repository.DeliveryRepository;
 import com.kyojin.tawsila.repository.TourRepository;
 import com.kyojin.tawsila.repository.VehicleRepository;
+import com.kyojin.tawsila.service.DeliveryHistoryService;
 import com.kyojin.tawsila.service.TourService;
 import com.kyojin.tawsila.util.DistanceCalculator;
 import com.kyojin.tawsila.util.ParseUtil;
@@ -37,6 +39,7 @@ public class TourServiceImpl implements TourService {
     private final TourRepository tourRepository;
     private final VehicleRepository vehicleRepository;
     private final DeliveryRepository deliveryRepository;
+    private final DeliveryHistoryService deliveryHistoryService;
     private final Warehouse warehouse;
     private final TourOptimizer optimizer;
 
@@ -83,8 +86,11 @@ public class TourServiceImpl implements TourService {
         var tour = tourRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Tour not found with id: " + id));
 
+        var previousStatus = tour.getStatus();
+
         tourMapper.updateEntityFromDTO(dto, tour);
 
+        // handle vehicle
         if (dto.getVehicle() != null && dto.getVehicle().getId() != null) {
             var vehicle = vehicleRepository.findById(dto.getVehicle().getId())
                     .orElseThrow(() -> new BadRequestException("Invalid vehicle ID"));
@@ -93,11 +99,11 @@ public class TourServiceImpl implements TourService {
             tour.setVehicle(null);
         }
 
+        // handle deliveries
         if (dto.getDeliveries() != null) {
             if (tour.getDeliveries() != null) {
                 tour.getDeliveries().forEach(d -> d.setTour(null));
             }
-
             var updatedDeliveries = findAndLinkDeliveries(dto.getDeliveries(), tour);
             tour.setDeliveries(updatedDeliveries);
         }
@@ -105,8 +111,14 @@ public class TourServiceImpl implements TourService {
         TourValidator.validateCapactity(tour);
 
         var updatedTour = tourRepository.save(tour);
+
+        if (previousStatus != tour.getStatus() && tour.getStatus() == TourStatus.COMPLETED) {
+            deliveryHistoryService.logDeliveryHistory(tour);
+        }
+
         return tourMapper.toDTO(updatedTour);
     }
+
 
 
     @Override

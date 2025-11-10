@@ -1,5 +1,6 @@
 package com.kyojin.tawsila.entity;
 
+import com.kyojin.tawsila.enums.TourStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +23,9 @@ public class Tour {
     private Long id;
 
     private LocalDate date;
+
+    @Enumerated(EnumType.STRING)
+    private TourStatus status;
 
     @ManyToOne
     @JoinColumn(name = "vehicle_id", nullable = false)
