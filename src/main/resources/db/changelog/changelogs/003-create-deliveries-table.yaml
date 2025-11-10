@@ -2,7 +2,6 @@ databaseChangeLog:
   - changeSet:
       id: 003-create-deliveries-table
       author: admin
-      context: production
       labels: core, deliveries
       comment: "Create the 'deliveries' table to store delivery data linked to tours."
 

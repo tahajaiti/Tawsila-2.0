@@ -1,0 +1,80 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-create-customers-table
+      author: admin
+      labels: core, customers
+      comment: "Create the 'customers' table to store client data, location, and delivery preferences."
+
+      changes:
+        - createTable:
+            tableName: customers
+            remarks: "Stores customer details including location and preferred delivery time slots."
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_customers
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  remarks: "Customer full name."
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+                  remarks: "Customer address (optional)."
+
+              - column:
+                  name: latitude
+                  type: DECIMAL(10,8)
+                  remarks: "Latitude coordinate of the customer's location."
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: longitude
+                  type: DECIMAL(11,8)
+                  remarks: "Longitude coordinate of the customer's location."
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: preferred_time_slot_start
+                  type: TIME
+                  remarks: "Start of the customer's preferred delivery time slot."
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: preferred_time_slot_end
+                  type: TIME
+                  remarks: "End of the customer's preferred delivery time slot."
+                  constraints:
+                    nullable: false
+
+        - createIndex:
+            indexName: idx_customers_coordinates
+            tableName: customers
+            columns:
+              - column:
+                  name: latitude
+              - column:
+                  name: longitude
+
+        - createIndex:
+            indexName: idx_customers_name
+            tableName: customers
+            columns:
+              - column:
+                  name: name
+
+      rollback:
+        - dropTable:
+            tableName: customers

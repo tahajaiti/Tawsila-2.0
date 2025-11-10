@@ -2,7 +2,6 @@ databaseChangeLog:
   - changeSet:
       id: 004-create-warehouses-table
       author: admin
-      context: production
       labels: core, warehouses
       comment: "Create the 'warehouses' table to store logistics hub information and coordinates."
 

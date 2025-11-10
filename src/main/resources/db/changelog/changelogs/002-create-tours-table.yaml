@@ -2,7 +2,6 @@ databaseChangeLog:
   - changeSet:
       id: 002-create-tours-table
       author: admin
-      context: production
       labels: core, tours
       comment: "Create the 'tours' table to record vehicle tour schedules."
 

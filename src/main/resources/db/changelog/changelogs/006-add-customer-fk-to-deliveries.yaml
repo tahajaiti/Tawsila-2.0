@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-add-customer-fk-to-deliveries
+      author: admin
+      context: production
+      labels: core, deliveries
+      comment: "Add 'customer_id' column to deliveries table and link it to customers table."
+
+      changes:
+        - addColumn:
+            tableName: deliveries
+            columns:
+              - column:
+                  name: customer_id
+                  type: BIGINT
+                  remarks: "Foreign key referencing the customer who receives this delivery."
+                  constraints:
+                    nullable: true
+
+        - addForeignKeyConstraint:
+            baseTableName: deliveries
+            baseColumnNames: customer_id
+            referencedTableName: customers
+            referencedColumnNames: id
+            constraintName: fk_deliveries_customer
+            onDelete: SET NULL
+            onUpdate: RESTRICT
+            deferrable: false
+            initiallyDeferred: false
+
+        - createIndex:
+            indexName: idx_deliveries_customer_id
+            tableName: deliveries
+            columns:
+              - column:
+                  name: customer_id
+
+      rollback:
+        - dropForeignKeyConstraint:
+            baseTableName: deliveries
+            constraintName: fk_deliveries_customer
+
+        - dropColumn:
+            tableName: deliveries
+            columnName: customer_id

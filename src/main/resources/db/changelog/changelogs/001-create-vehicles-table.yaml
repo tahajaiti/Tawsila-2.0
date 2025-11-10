@@ -2,7 +2,6 @@ databaseChangeLog:
   - changeSet:
       id: 001-create-vehicles-table
       author: tahajaiti
-      context: production
       labels: core, vehicles
       comment: "Create the 'vehicles' table to store vehicle type and capacity details."
 
