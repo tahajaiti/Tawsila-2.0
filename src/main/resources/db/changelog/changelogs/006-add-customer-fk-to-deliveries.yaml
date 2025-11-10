@@ -2,7 +2,6 @@ databaseChangeLog:
   - changeSet:
       id: 006-add-customer-fk-to-deliveries
       author: admin
-      context: production
       labels: core, deliveries
       comment: "Add 'customer_id' column to deliveries table and link it to customers table."
 
