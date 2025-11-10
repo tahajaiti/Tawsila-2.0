@@ -63,4 +63,10 @@ public class TourController {
     public ResponseEntity<TourDistanceDTO> getTourDistance(@PathVariable Long id) {
         return ResponseEntity.ok(tourService.getTotalDistance(id));
     }
+
+    @PatchMapping("/{id}/{status}")
+    public ResponseEntity<TourDTO> updateTourStatus(@PathVariable Long id, @PathVariable String status ) {
+        var tour = tourService.updateTourStatus(id, status);
+        return ResponseEntity.ok(tour);
+    }
 }
