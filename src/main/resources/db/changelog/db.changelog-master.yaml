@@ -1,13 +1,13 @@
 databaseChangeLog:
   - include:
-      file: changelogs/vehicle-changelog.yaml
+      file: changelogs/001-create-vehicles-table.yaml
       relativeToChangelogFile: true
   - include:
-      file: changelogs/tour-changelog.yaml
+      file: changelogs/002-create-tours-table.yaml
       relativeToChangelogFile: true
   - include:
-        file: changelogs/delivery-changelog.yaml
+        file: changelogs/003-create-deliveries-table.yaml
         relativeToChangelogFile: true
   - include:
-        file: changelogs/warehouse-changelog.yaml
+        file: changelogs/004-create-warehouses-table.yaml
         relativeToChangelogFile: true

@@ -1,10 +1,15 @@
 databaseChangeLog:
   - changeSet:
-      id: create-table-tours
+      id: 002-create-tours-table
       author: admin
+      context: production
+      labels: core, tours
+      comment: "Create the 'tours' table to record vehicle tour schedules."
+
       changes:
         - createTable:
             tableName: tours
+            remarks: "Stores tour information and links each tour to a vehicle."
             columns:
               - column:
                   name: id
@@ -12,17 +17,20 @@ databaseChangeLog:
                   autoIncrement: true
                   constraints:
                     primaryKey: true
+                    primaryKeyName: pk_tours
                     nullable: false
 
               - column:
                   name: date
                   type: DATE
+                  remarks: "Date on which the tour takes place."
                   constraints:
                     nullable: false
 
               - column:
                   name: vehicle_id
                   type: BIGINT
+                  remarks: "Foreign key referencing the assigned vehicle."
                   constraints:
                     nullable: false
 
@@ -32,14 +40,19 @@ databaseChangeLog:
             referencedTableName: vehicles
             referencedColumnNames: id
             constraintName: fk_tours_vehicle
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+            deferrable: false
+            initiallyDeferred: false
 
-  - changeSet:
-      id: create-index-tours-vehicle
-      author: admin
-      changes:
         - createIndex:
-            indexName: idx_tours_vehicle
+            indexName: idx_tours_vehicle_id
             tableName: tours
+            unique: false
             columns:
               - column:
                   name: vehicle_id
+
+      rollback:
+        - dropTable:
+            tableName: tours

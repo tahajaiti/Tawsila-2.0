@@ -1,0 +1,95 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-create-deliveries-table
+      author: admin
+      context: production
+      labels: core, deliveries
+      comment: "Create the 'deliveries' table to store delivery data linked to tours."
+
+      changes:
+        - createTable:
+            tableName: deliveries
+            remarks: "Stores delivery details including location, weight, volume, and assigned tour."
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_deliveries
+                    nullable: false
+
+              - column:
+                  name: latitude
+                  type: DECIMAL(10,8)
+                  remarks: "Latitude coordinate of the delivery location."
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: longitude
+                  type: DECIMAL(11,8)
+                  remarks: "Longitude coordinate of the delivery location."
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: weight_kg
+                  type: DECIMAL(10,2)
+                  remarks: "Weight of the delivery in kilograms."
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: volume_m3
+                  type: DECIMAL(10,2)
+                  remarks: "Volume of the delivery in cubic meters."
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: time_slot
+                  type: VARCHAR(50)
+                  remarks: "Time slot assigned for the delivery, e.g., '09:00-11:00'."
+
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  remarks: "Current delivery status, e.g., 'pending', 'delivered'."
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: tour_id
+                  type: BIGINT
+                  remarks: "Foreign key referencing the associated tour."
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: delivery_order
+                  type: INT
+                  remarks: "Order number of the delivery within a tour route."
+
+        - addForeignKeyConstraint:
+            baseTableName: deliveries
+            baseColumnNames: tour_id
+            referencedTableName: tours
+            referencedColumnNames: id
+            constraintName: fk_deliveries_tour
+            onDelete: SET NULL
+            onUpdate: RESTRICT
+            deferrable: false
+            initiallyDeferred: false
+
+        - createIndex:
+            indexName: idx_deliveries_tour_id
+            tableName: deliveries
+            columns:
+              - column:
+                  name: tour_id
+
+      rollback:
+        - dropTable:
+            tableName: deliveries
