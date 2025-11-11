@@ -13,6 +13,18 @@ spring:
     enabled: true
     drop-first: false
 
+  ai:
+    azure:
+      openai:
+        api-key: ${AZURE_OPENAI_API_KEY}
+        endpoint: ${AZURE_OPENAI_ENDPOINT}
+        chat:
+          options:
+            deployment-name: ${AZURE_OPENAI_CHAT_DEPLOYMENT_NAME}
+            model: ${AZURE_OPENAI_CHAT_MODEL}
+            temperature: 1.0
+
+
 server:
   port: 8080
 
