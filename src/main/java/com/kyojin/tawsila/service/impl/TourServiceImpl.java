@@ -6,17 +6,19 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.kyojin.tawsila.criteria.TourSearchCriteria;
 import com.kyojin.tawsila.dto.DeliveryDTO;
 import com.kyojin.tawsila.dto.TourDTO;
 import com.kyojin.tawsila.dto.TourDistanceDTO;
 import com.kyojin.tawsila.entity.Delivery;
 import com.kyojin.tawsila.entity.Tour;
 import com.kyojin.tawsila.entity.Warehouse;
-import com.kyojin.tawsila.enums.AlgorithmType;
 import com.kyojin.tawsila.enums.TourStatus;
 import com.kyojin.tawsila.exception.BadRequestException;
 import com.kyojin.tawsila.exception.NotFoundException;
 import com.kyojin.tawsila.mapper.TourMapper;
+import com.kyojin.tawsila.model.GenericSpecification;
+import com.kyojin.tawsila.model.SearchInput;
 import com.kyojin.tawsila.optimizer.TourOptimizer;
 import com.kyojin.tawsila.repository.DeliveryRepository;
 import com.kyojin.tawsila.repository.TourRepository;
@@ -29,6 +31,9 @@ import com.kyojin.tawsila.util.TourValidator;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -78,6 +83,51 @@ public class TourServiceImpl implements TourService {
         return tourRepository.findAll().stream()
                 .map(tourMapper::toDTO)
                 .toList();
+    }
+
+    @Override
+    public Page<TourDTO> getTours(TourSearchCriteria criteria, Pageable pageable) {
+        Specification<Tour> spec = Specification.unrestricted();
+
+        if (criteria != null) {
+            if (criteria.getStatus() != null) {
+                spec = spec.and(new GenericSpecification<>(
+                        new SearchInput("status", ":", criteria.getStatus())
+                ));
+            }
+
+            if (criteria.getVehicleId() != null) {
+                spec = spec.and((root, query, cb) ->
+                        cb.equal(root.get("vehicle").get("id"), criteria.getVehicleId())
+                );
+            }
+
+            if (criteria.getStartDate() != null) {
+                spec = spec.and(new GenericSpecification<>(
+                        new SearchInput("date", ">", criteria.getStartDate())
+                ));
+            }
+            if (criteria.getEndDate() != null) {
+                spec = spec.and(new GenericSpecification<>(
+                        new SearchInput("date", "<", criteria.getEndDate())
+                ));
+            }
+
+            if (criteria.getMinDeliveries() != null) {
+                spec = spec.and((root, query, cb) ->
+                        cb.greaterThanOrEqualTo(cb.size(root.get("deliveries")), criteria.getMinDeliveries())
+                );
+            }
+
+            if (criteria.getMaxDeliveries() != null) {
+                spec = spec.and((root, query, cb) ->
+                        cb.lessThanOrEqualTo(cb.size(root.get("deliveries")), criteria.getMaxDeliveries())
+                );
+            }
+        }
+
+        Page<Tour> tourPage = tourRepository.findAll(spec, pageable);
+        return tourPage.map(tourMapper::toDTO);
     }
 
     @Override
@@ -182,13 +232,13 @@ public class TourServiceImpl implements TourService {
             totalDistance += DistanceCalculator.calculateDistance(
                     prevLat,
                     prevLon,
-                    delivery.getLatitude(),
-                    delivery.getLongitude()
+                    delivery.getCustomer().getLatitude(),
+                    delivery.getCustomer().getLongitude()
             );
 
             // update previous location to current delivery
-            prevLat = delivery.getLatitude();
-            prevLon = delivery.getLongitude();
+            prevLat = delivery.getCustomer().getLatitude();
+            prevLon = delivery.getCustomer().getLongitude();
         }
 
 

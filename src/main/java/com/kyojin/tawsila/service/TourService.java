@@ -1,8 +1,11 @@
 package com.kyojin.tawsila.service;
 
+import com.kyojin.tawsila.criteria.TourSearchCriteria;
 import com.kyojin.tawsila.dto.DeliveryDTO;
 import com.kyojin.tawsila.dto.TourDTO;
 import com.kyojin.tawsila.dto.TourDistanceDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +31,14 @@ public interface TourService {
      * @return List of all tour DTOs
      */
     List<TourDTO> getAllTours();
+
+    /**
+     * Retrieve tours based on search criteria with pagination
+     * @param criteria Search criteria for filtering tours
+     * @param pageable Pagination information
+     * @return Page of tour DTOs matching the criteria
+     */
+    Page<TourDTO> getTours(TourSearchCriteria criteria, Pageable pageable);
 
     /**
      * Update an existing tour

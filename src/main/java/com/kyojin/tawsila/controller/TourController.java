@@ -1,5 +1,6 @@
 package com.kyojin.tawsila.controller;
 
+import com.kyojin.tawsila.criteria.TourSearchCriteria;
 import com.kyojin.tawsila.dto.TourDTO;
 import com.kyojin.tawsila.dto.TourDistanceDTO;
 import com.kyojin.tawsila.entity.Tour;
@@ -8,6 +9,8 @@ import com.kyojin.tawsila.service.TourService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,9 +33,18 @@ public class TourController {
         return ResponseEntity.ok(createdTour);
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<TourDTO>> getAllTours() {
+//        return  ResponseEntity.ok(tourService.getAllTours());
+//    }
+
     @GetMapping
-    public ResponseEntity<List<TourDTO>> getAllTours() {
-        return  ResponseEntity.ok(tourService.getAllTours());
+    public ResponseEntity<Page<TourDTO>> getTours(
+            @ModelAttribute TourSearchCriteria criteria,
+            Pageable pageable
+    ) {
+        Page<TourDTO> tours = tourService.getTours(criteria, pageable);
+        return ResponseEntity.ok(tours);
     }
 
     @GetMapping("/{id}")
