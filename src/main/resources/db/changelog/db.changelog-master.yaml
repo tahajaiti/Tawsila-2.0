@@ -20,3 +20,9 @@ databaseChangeLog:
   - include:
       file: changelogs/007-create-delivery-history-table.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changelogs/008-refactor-deliveries-location-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changelogs/009-add-status-to-tours-table.yaml
+      relativeToChangelogFile: true

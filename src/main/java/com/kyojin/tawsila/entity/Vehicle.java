@@ -23,13 +23,13 @@ public class Vehicle {
     @Column(nullable = false)
     private VehicleType type;
 
-    @Column(nullable = false)
+    @Column(name = "max_weight_kg", nullable = false)
     private double maxWeightKg;
 
-    @Column(nullable = false)
+    @Column(name = "max_volume_m3", nullable = false)
     private double maxVolumeM3;
 
-    @Column(nullable = false)
+    @Column(name = "max_deliveries", nullable = false)
     private int maxDeliveries;
 
     public Vehicle(VehicleType type) {
@@ -37,5 +37,5 @@ public class Vehicle {
         this.maxVolumeM3 = type.getMaxVolumeM3();
         this.maxDeliveries = type.getMaxDeliveries();
     }
-
 }
+

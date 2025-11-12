@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 009-add-status-to-tours-table
+      author: admin
+      labels: core, tours
+      comment: "Add 'status' column to 'tours' table to track tour state."
+
+      changes:
+        - addColumn:
+            tableName: tours
+            columns:
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+                  remarks: "Status of the tour (e.g., PLANNED, IN_PROGRESS, COMPLETED)."
+                  constraints:
+                    nullable: true
+
+      rollback:
+        - dropColumn:
+            tableName: tours
+            columnName: status

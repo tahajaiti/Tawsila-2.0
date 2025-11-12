@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008-refactor-deliveries-location-table
+      author: tahajaiti
+      labels: core, deliveries
+      comment: "Link deliveries to customers and remove redundant coordinate columns."
+
+      changes:
+        - dropColumn:
+            tableName: deliveries
+            columnName: latitude
+
+        - dropColumn:
+            tableName: deliveries
+            columnName: longitude
+
+      rollback:
+        - addColumn:
+            tableName: deliveries
+            columns:
+              - column:
+                  name: latitude
+                  type: DECIMAL(10,8)
+              - column:
+                  name: longitude
+                  type: DECIMAL(11,8)
