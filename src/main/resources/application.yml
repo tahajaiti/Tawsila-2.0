@@ -24,6 +24,9 @@ spring:
             model: ${AZURE_OPENAI_CHAT_MODEL}
             temperature: 1.0
 
+tawsila:
+  optimizer:
+    type: AI
 
 server:
   port: 8080
