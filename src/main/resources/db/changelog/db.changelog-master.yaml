@@ -6,8 +6,17 @@ databaseChangeLog:
       file: changelogs/002-create-tours-table.yaml
       relativeToChangelogFile: true
   - include:
-        file: changelogs/003-create-deliveries-table.yaml
-        relativeToChangelogFile: true
+      file: changelogs/003-create-deliveries-table.yaml
+      relativeToChangelogFile: true
   - include:
-        file: changelogs/004-create-warehouses-table.yaml
-        relativeToChangelogFile: true
+      file: changelogs/004-create-warehouses-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changelogs/005-create-customers-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changelogs/006-add-customer-fk-to-deliveries.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changelogs/007-create-delivery-history-table.yaml
+      relativeToChangelogFile: true

@@ -46,8 +46,8 @@ public class ClarkeWrightOptimizerTest {
     private Delivery delivery(Long id, double lat, double lon, double weight, double volume) {
         Delivery d = new Delivery();
         d.setId(id);
-        d.setLatitude(lat);
-        d.setLongitude(lon);
+        d.getCustomer().setLatitude(lat);
+        d.getCustomer().setLongitude(lon);
         d.setWeightKg(weight);
         d.setVolumeM3(volume);
         return d;

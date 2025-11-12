@@ -109,8 +109,8 @@ public class TourControllerIntegrationTest {
 
     private DeliveryDTO delivery(double latitude, double longitude, double weightKg, double volumeM3) {
         Delivery deliveryEntity = new Delivery();
-        deliveryEntity.setLatitude(latitude);
-        deliveryEntity.setLongitude(longitude);
+        deliveryEntity.getCustomer().setLatitude(latitude);
+        deliveryEntity.getCustomer().setLongitude(longitude);
         deliveryEntity.setWeightKg(weightKg);
         deliveryEntity.setVolumeM3(volumeM3);
 
@@ -118,8 +118,8 @@ public class TourControllerIntegrationTest {
 
         DeliveryDTO dto = new DeliveryDTO();
         dto.setId(savedDelivery.getId());
-        dto.setLatitude(savedDelivery.getLatitude());
-        dto.setLongitude(savedDelivery.getLongitude());
+        dto.setLatitude(savedDelivery.getCustomer().getLatitude());
+        dto.setLongitude(savedDelivery.getCustomer().getLongitude());
         dto.setWeightKg(savedDelivery.getWeightKg());
         dto.setVolumeM3(savedDelivery.getVolumeM3());
 
