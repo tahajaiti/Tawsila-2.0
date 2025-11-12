@@ -1,10 +1,13 @@
 package com.kyojin.tawsila.controller;
 
+import com.kyojin.tawsila.criteria.CustomerSearchCriteria;
 import com.kyojin.tawsila.dto.CustomerDTO;
 import com.kyojin.tawsila.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -40,11 +43,20 @@ public class CustomerController {
                 });
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
+//        log.info("Fetching all customers");
+//        var customers = customerService.getAllCustomers();
+//        log.debug("Fetched {} customers", customers.size());
+//        return ResponseEntity.ok(customers);
+//    }
+
     @GetMapping
-    public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
-        log.info("Fetching all customers");
-        var customers = customerService.getAllCustomers();
-        log.debug("Fetched {} customers", customers.size());
+    public ResponseEntity<Page<CustomerDTO>> getCustomers(
+            @ModelAttribute CustomerSearchCriteria criteria,
+            Pageable pageable
+    ) {
+        Page<CustomerDTO> customers = customerService.getCustomers(criteria, pageable);
         return ResponseEntity.ok(customers);
     }
 

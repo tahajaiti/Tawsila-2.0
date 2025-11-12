@@ -1,6 +1,9 @@
 package com.kyojin.tawsila.service;
 
+import com.kyojin.tawsila.criteria.CustomerSearchCriteria;
 import com.kyojin.tawsila.dto.CustomerDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +32,15 @@ public interface CustomerService {
      * @return a list of CustomerDTOs
      */
     List<CustomerDTO> getAllCustomers();
+
+    /**
+     * Get customers based on search criteria with pagination.
+     *
+     * @param criteria the search criteria
+     * @param pageable the pagination information
+     * @return a paginated list of CustomerDTOs
+     */
+    Page<CustomerDTO> getCustomers(CustomerSearchCriteria criteria, Pageable pageable);
 
     /**
      * Delete a customer by its ID.
