@@ -9,10 +9,14 @@ import com.kyojin.tawsila.util.DistanceCalculator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
+@ConditionalOnProperty(value = "tawsila.optimizer.type", havingValue = "NEAREST_NEIGHBOR")
 public class NearestNeighborOptimizer implements TourOptimizer {
 
     @Getter

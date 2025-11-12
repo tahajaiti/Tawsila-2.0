@@ -7,11 +7,13 @@ import com.kyojin.tawsila.enums.VehicleType;
 import com.kyojin.tawsila.optimizer.TourOptimizer;
 import com.kyojin.tawsila.util.DistanceCalculator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 @Component
+@ConditionalOnProperty(value = "tawsila.optimizer.type", havingValue = "CLARKE_WRIGHT")
 public class ClarkeWrightOptimizer implements TourOptimizer {
 
     @RequiredArgsConstructor
