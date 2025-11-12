@@ -228,7 +228,7 @@ public class ClarkeWrightOptimizer implements TourOptimizer {
     private double dist(Warehouse w, Delivery d) {
         return DistanceCalculator.calculateDistance(
                 w.getLatitude(), w.getLongitude(),
-                d.getLatitude(), d.getLongitude()
+                d.getCustomer().getLatitude(), d.getCustomer().getLongitude()
         );
     }
 
@@ -237,8 +237,8 @@ public class ClarkeWrightOptimizer implements TourOptimizer {
      */
     private double dist(Delivery d1, Delivery d2) {
         return DistanceCalculator.calculateDistance(
-                d1.getLatitude(), d1.getLongitude(),
-                d2.getLatitude(), d2.getLongitude()
+                d1.getCustomer().getLatitude(), d1.getCustomer().getLongitude(),
+                d2.getCustomer().getLatitude(), d2.getCustomer().getLongitude()
         );
     }
 

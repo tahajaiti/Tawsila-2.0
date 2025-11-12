@@ -30,8 +30,8 @@ public class NearestNeighborOptimizer implements TourOptimizer {
         int currentStops;
 
         public void update(Delivery delivery) {
-            this.currentLat = delivery.getLatitude();
-            this.currentLon = delivery.getLongitude();
+            this.currentLat = delivery.getCustomer().getLatitude();
+            this.currentLon = delivery.getCustomer().getLongitude();
             this.currentWeight += delivery.getWeightKg();
             this.currentVolume += delivery.getVolumeM3();
             this.currentStops++;
@@ -102,7 +102,7 @@ public class NearestNeighborOptimizer implements TourOptimizer {
             // calculate distance from current position to delivery
             double dist = DistanceCalculator.calculateDistance(
                     state.getCurrentLat(), state.getCurrentLon(),
-                    del.getLatitude(), del.getLongitude()
+                    del.getCustomer().getLatitude(), del.getCustomer().getLongitude()
             );
 
             // we check if it is closer than the current minimum
