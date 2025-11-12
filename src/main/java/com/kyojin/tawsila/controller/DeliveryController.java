@@ -1,10 +1,13 @@
 package com.kyojin.tawsila.controller;
 
+import com.kyojin.tawsila.criteria.DeliverySearchCriteria;
 import com.kyojin.tawsila.dto.DeliveryDTO;
 import com.kyojin.tawsila.dto.DeliveryStatusDTO;
 import com.kyojin.tawsila.service.DeliveryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,9 +30,18 @@ public class DeliveryController {
         return ResponseEntity.ok(createdDelivery);
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<DeliveryDTO>> getAllDeliveries() {
+//        return ResponseEntity.ok(deliveryService.getAllDeliveries());
+//    }
+
     @GetMapping
-    public ResponseEntity<List<DeliveryDTO>> getAllDeliveries() {
-        return ResponseEntity.ok(deliveryService.getAllDeliveries());
+    public ResponseEntity<Page<DeliveryDTO>> getDeliveries(
+            @ModelAttribute DeliverySearchCriteria criteria,
+            Pageable pageable
+    ) {
+        Page<DeliveryDTO> deliveries = deliveryService.getDeliveries(criteria, pageable);
+        return ResponseEntity.ok(deliveries);
     }
 
     @GetMapping("/{id}" )

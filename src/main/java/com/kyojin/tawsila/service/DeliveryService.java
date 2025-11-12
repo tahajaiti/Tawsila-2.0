@@ -1,6 +1,9 @@
 package com.kyojin.tawsila.service;
 
+import com.kyojin.tawsila.criteria.DeliverySearchCriteria;
 import com.kyojin.tawsila.dto.DeliveryDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +36,15 @@ public interface DeliveryService {
      * @return a list of DeliveryResponseDTOs
      */
     List<DeliveryDTO> getAllDeliveries();
+
+    /**
+     * Get deliveries based on search criteria with pagination.
+     *
+     * @param criteria the search criteria
+     * @param pageable the pagination information
+     * @return a paginated list of DeliveryDTOs
+     */
+    Page<DeliveryDTO> getDeliveries(DeliverySearchCriteria criteria, Pageable pageable);
 
     /**
      * Update an existing delivery.

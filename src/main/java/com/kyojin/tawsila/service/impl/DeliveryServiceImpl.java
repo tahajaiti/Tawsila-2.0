@@ -1,15 +1,22 @@
 package com.kyojin.tawsila.service.impl;
 
+import com.kyojin.tawsila.criteria.DeliverySearchCriteria;
 import com.kyojin.tawsila.dto.DeliveryDTO;
+import com.kyojin.tawsila.entity.Delivery;
 import com.kyojin.tawsila.entity.Tour;
 import com.kyojin.tawsila.enums.DeliveryStatus;
 import com.kyojin.tawsila.exception.BadRequestException;
 import com.kyojin.tawsila.exception.NotFoundException;
 import com.kyojin.tawsila.mapper.DeliveryMapper;
+import com.kyojin.tawsila.model.GenericSpecification;
+import com.kyojin.tawsila.model.SearchInput;
 import com.kyojin.tawsila.repository.DeliveryRepository;
 import com.kyojin.tawsila.repository.TourRepository;
 import com.kyojin.tawsila.service.DeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,6 +65,64 @@ public class DeliveryServiceImpl implements DeliveryService {
         return deliveryRepository.findAll().stream()
                 .map(deliveryMapper::toDTO)
                 .toList();
+    }
+
+    @Override
+    public Page<DeliveryDTO> getDeliveries(DeliverySearchCriteria criteria, Pageable pageable) {
+        Specification<Delivery> spec = Specification.unrestricted();
+
+        if (criteria != null) {
+            if (criteria.getStatus() != null) {
+                spec = spec.and(new GenericSpecification<>(
+                        new SearchInput("status", ":", criteria.getStatus())
+                ));
+            }
+
+
+            if (criteria.getMinWeightKg() != null) {
+                spec = spec.and(new GenericSpecification<>(
+                        new SearchInput("weightKg", ">", criteria.getMinWeightKg())
+                ));
+            }
+            if (criteria.getMaxWeightKg() != null) {
+                spec = spec.and(new GenericSpecification<>(
+                        new SearchInput("weightKg", "<", criteria.getMaxWeightKg())
+                ));
+            }
+
+            if (criteria.getMinVolumeM3() != null) {
+                spec = spec.and(new GenericSpecification<>(
+                        new SearchInput("volumeM3", ">", criteria.getMinVolumeM3())
+                ));
+            }
+            if (criteria.getMaxVolumeM3() != null) {
+                spec = spec.and(new GenericSpecification<>(
+                        new SearchInput("volumeM3", "<", criteria.getMaxVolumeM3())
+                ));
+            }
+
+            if (criteria.getTimeSlot() != null && !criteria.getTimeSlot().isEmpty()) {
+                spec = spec.and(new GenericSpecification<>(
+                        new SearchInput("timeSlot", ":", criteria.getTimeSlot())
+                ));
+            }
+
+
+            if (criteria.getTourId() != null) {
+                spec = spec.and((root, query, cb) ->
+                        cb.equal(root.get("tour").get("id"), criteria.getTourId())
+                );
+            }
+
+            if (criteria.getCustomerId() != null) {
+                spec = spec.and((root, query, cb) ->
+                        cb.equal(root.get("customer").get("id"), criteria.getCustomerId())
+                );
+            }
+        }
+
+        Page<Delivery> deliveryPage = deliveryRepository.findAll(spec, pageable);
+        return deliveryPage.map(deliveryMapper::toDTO);
     }
 
     @Override
