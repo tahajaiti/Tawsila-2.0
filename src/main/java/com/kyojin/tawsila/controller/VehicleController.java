@@ -1,9 +1,12 @@
 package com.kyojin.tawsila.controller;
 
+import com.kyojin.tawsila.criteria.VehicleSearchCriteria;
 import com.kyojin.tawsila.dto.VehicleDTO;
 import com.kyojin.tawsila.service.VehicleService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,8 +31,11 @@ public class VehicleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<VehicleDTO>> getAllVehicles() {
-        List<VehicleDTO> vehicles = vehicleService.getAllVehicles();
+    public ResponseEntity<Page<VehicleDTO>> getVehicles(
+            @ModelAttribute VehicleSearchCriteria criteria,
+            Pageable pageable
+    ) {
+        Page<VehicleDTO> vehicles = vehicleService.getVehicles(criteria, pageable);
         return ResponseEntity.ok(vehicles);
     }
 

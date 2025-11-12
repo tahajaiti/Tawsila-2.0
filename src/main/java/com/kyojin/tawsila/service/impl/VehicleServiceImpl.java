@@ -1,13 +1,20 @@
 package com.kyojin.tawsila.service.impl;
 
+import com.kyojin.tawsila.criteria.VehicleSearchCriteria;
 import com.kyojin.tawsila.dto.VehicleDTO;
+import com.kyojin.tawsila.entity.Vehicle;
 import com.kyojin.tawsila.enums.VehicleType;
 import com.kyojin.tawsila.exception.NotFoundException;
 import com.kyojin.tawsila.mapper.VehicleMapper;
+import com.kyojin.tawsila.model.GenericSpecification;
+import com.kyojin.tawsila.model.SearchInput;
 import com.kyojin.tawsila.repository.VehicleRepository;
 import com.kyojin.tawsila.service.VehicleService;
 import com.kyojin.tawsila.util.ParseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,6 +56,36 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleRepository.findAll().stream()
                 .map(vehicleMapper::toDTO)
                 .toList();
+    }
+
+    @Override
+    public Page<VehicleDTO> getVehicles(VehicleSearchCriteria criteria, Pageable pageable) {
+        Specification<Vehicle> spec = Specification.unrestricted();
+
+        if (criteria != null) {
+            if (criteria.getType() != null && !criteria.getType().isEmpty()) {
+                VehicleType typeEnum = ParseUtil.parseVehicleType(criteria.getType());
+                spec = spec.and(new GenericSpecification<>(
+                        new SearchInput("type", ":", typeEnum)
+                ));
+            }
+
+            if (criteria.getMinPayload() != null) {
+                spec = spec.and(new GenericSpecification<>(
+                        new SearchInput("maxWeightKg", ">", criteria.getMinPayload())
+                ));
+            }
+
+            if (criteria.getMinVolume() != null) {
+                spec = spec.and(new GenericSpecification<>(
+                        new SearchInput("maxVolumeM3", ">", criteria.getMinVolume())
+                ));
+            }
+        }
+
+        Page<Vehicle> vehiclePage = vehicleRepository.findAll(spec, pageable);
+
+        return vehiclePage.map(vehicleMapper::toDTO);
     }
 
     @Override

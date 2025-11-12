@@ -1,6 +1,9 @@
 package com.kyojin.tawsila.service;
 
+import com.kyojin.tawsila.criteria.VehicleSearchCriteria;
 import com.kyojin.tawsila.dto.VehicleDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,12 +30,22 @@ public interface VehicleService {
      */
     Optional<VehicleDTO> getVehicleById(Long id);
 
+
     /**
      * Get all vehicles.
      *
      * @return a list of VehicleDTOs
      */
     List<VehicleDTO> getAllVehicles();
+
+    /**
+     * Get vehicles based on search criteria with pagination.
+     *
+     * @param criteria the search criteria
+     * @param pageable the pagination information
+     * @return a paginated list of VehicleDTOs matching the criteria
+     */
+    Page<VehicleDTO> getVehicles(VehicleSearchCriteria criteria, Pageable pageable);
 
     /**
      * Update an existing vehicle.
