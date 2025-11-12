@@ -7,6 +7,7 @@ import com.kyojin.tawsila.dto.TourDTO;
 import com.kyojin.tawsila.dto.VehicleDTO;
 import com.kyojin.tawsila.entity.Customer;
 import com.kyojin.tawsila.entity.Delivery;
+import com.kyojin.tawsila.enums.DeliveryStatus;
 import com.kyojin.tawsila.repository.CustomerRepository;
 import com.kyojin.tawsila.repository.DeliveryRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,13 +17,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,7 +55,6 @@ public class TourControllerIntegrationTest {
 
     @Test
     void testOptimizeTourEndpoint() throws Exception {
-        // Create vehicle
         VehicleDTO vehicleDTO = new VehicleDTO();
         vehicleDTO.setType("TRUCK");
         vehicleDTO.setMaxDeliveries(10);
@@ -62,15 +66,13 @@ public class TourControllerIntegrationTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(vehicleJson))
                         .andExpect(status().isOk())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString(),
+                        .andReturn().getResponse().getContentAsString(),
                 VehicleDTO.class
         );
 
-        DeliveryDTO delivery1 = saveDelivery(1.0, 1.0, 5.0, 2.0);
-        DeliveryDTO delivery2 = saveDelivery(2.0, 2.0, 5.0, 2.0);
-        DeliveryDTO delivery3 = saveDelivery(3.0, 3.0, 5.0, 2.0);
+        DeliveryDTO delivery1 = saveDelivery(10.0, 10.0, 5.0, 2.0, "Customer A");
+        DeliveryDTO delivery2 = saveDelivery(1.0, 1.0, 5.0, 2.0, "Customer B");
+        DeliveryDTO delivery3 = saveDelivery(5.0, 5.0, 5.0, 2.0, "Customer C");
 
         TourDTO tourDTO = new TourDTO();
         tourDTO.setVehicle(createdVehicle);
@@ -84,43 +86,43 @@ public class TourControllerIntegrationTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(tourJson))
                         .andExpect(status().isOk())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString(),
+                        .andReturn().getResponse().getContentAsString(),
                 TourDTO.class
         );
 
         Long tourId = createdTour.getId();
         assertThat(createdTour.getDeliveries()).hasSize(3);
 
+        MvcResult result = mockMvc.perform(get("/tours/{id}/optimize", tourId))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
         TourDTO optimizedTour = objectMapper.readValue(
-                mockMvc.perform(get("/tours/{id}/optimize", tourId))
-                        .andDo(print())
-                        .andExpect(status().isOk())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString(),
+                result.getResponse().getContentAsString(),
                 TourDTO.class
         );
 
         assertThat(optimizedTour.getId()).isEqualTo(tourId);
-        assertThat(optimizedTour.getDeliveries()).hasSize(3);
 
-        List<Double> originalLatitudes = createdTour.getDeliveries().stream()
-                .map(DeliveryDTO::getLatitude).toList();
-        List<Double> optimizedLatitudes = optimizedTour.getDeliveries().stream()
-                .map(DeliveryDTO::getLatitude).toList();
+        List<Long> originalIds = createdTour.getDeliveries().stream().map(DeliveryDTO::getId).collect(Collectors.toList());
+        List<Long> optimizedIds = optimizedTour.getDeliveries().stream().map(DeliveryDTO::getId).collect(Collectors.toList());
 
-        assertThat(optimizedLatitudes).isNotEqualTo(originalLatitudes);
+        assertThat(optimizedIds)
+                .as("Optimized tour must contain exactly the same delivery IDs as the original")
+                .containsExactlyInAnyOrderElementsOf(originalIds);
+
+        System.out.println("Original Order: " + originalIds);
+        System.out.println("Optimized Order: " + optimizedIds);
     }
 
-    private DeliveryDTO saveDelivery(double latitude, double longitude, double weightKg, double volumeM3) {
+    private DeliveryDTO saveDelivery(double latitude, double longitude, double weightKg, double volumeM3, String customerName) {
         var customer = new Customer();
-        customer.setName("Test Customer");
+        customer.setName(customerName);
         customer.setLatitude(latitude);
         customer.setLongitude(longitude);
-        customer.setPreferredTimeSlotStart(java.time.LocalTime.of(8, 0));
-        customer.setPreferredTimeSlotEnd(java.time.LocalTime.of(18, 0));
+        customer.setPreferredTimeSlotStart(LocalTime.of(8, 0));
+        customer.setPreferredTimeSlotEnd(LocalTime.of(18, 0));
 
         customer = customerRepository.save(customer);
 
@@ -128,6 +130,8 @@ public class TourControllerIntegrationTest {
         delivery.setCustomer(customer);
         delivery.setWeightKg(weightKg);
         delivery.setVolumeM3(volumeM3);
+        delivery.setStatus(DeliveryStatus.PENDING);
+
 
         Delivery savedDelivery = deliveryRepository.save(delivery);
 
@@ -137,6 +141,7 @@ public class TourControllerIntegrationTest {
         dto.setLongitude(savedDelivery.getCustomer().getLongitude());
         dto.setWeightKg(savedDelivery.getWeightKg());
         dto.setVolumeM3(savedDelivery.getVolumeM3());
+        dto.setStatus("PENDING");
 
         return dto;
     }
